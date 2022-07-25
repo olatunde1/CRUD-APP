@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 
 
 export default function Read() {
+
     const [APIData, setAPIData] = useState([]);
     useEffect(() => {
         axios.get(`https://62dadaefe56f6d82a76b2d7e.mockapi.io/fakeData`)
             .then((response) => {
+                console.log(response.data)
                 setAPIData(response.data);
             })
     }, [])
@@ -20,9 +22,20 @@ export default function Read() {
         localStorage.setItem('Last Name', lastName);
         localStorage.setItem('Checkbox Value', checkbox)
     }
-    
+
+    const getData = () => {
+        axios.get(`https://62dadaefe56f6d82a76b2d7e.mockapi.io/fakeData`)
+            .then((getData) => {
+                 setAPIData(getData.data);
+             })
+    }
+
+
     const onDelete = (id) => {
         axios.delete(`https://62dadaefe56f6d82a76b2d7e.mockapi.io/fakeData/${id}`)
+            .then(() => {
+                getData();
+            })
     }
 
     return (
@@ -34,6 +47,7 @@ export default function Read() {
                         <Table.HeaderCell>Last Name</Table.HeaderCell>
                         <Table.HeaderCell>Checked</Table.HeaderCell>
                         <Table.HeaderCell>Update</Table.HeaderCell>
+                        <Table.HeaderCell>Delete</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
 
@@ -44,12 +58,14 @@ export default function Read() {
                             <Table.Cell>{data.firstName}</Table.Cell>
                             <Table.Cell>{data.lastName}</Table.Cell>
                             <Table.Cell>{data.checkbox ? 'Checked' : 'Unchecked'}</Table.Cell>
-                            <Link to =' /update'>
+                            <Link to='/update'>
                                 <Table.Cell> 
                                     <Button onClick={() => setData(data)}>Update</Button>
-                                    <Button onClick={() => onDelete(data.id)}>Delete</Button>
                                 </Table.Cell>
                             </Link>
+                            <Table.Cell> 
+                                <Button onClick={() => onDelete(data.id)}>Delete</Button>
+                            </Table.Cell>
                         </Table.Row>
 
                     )})}
